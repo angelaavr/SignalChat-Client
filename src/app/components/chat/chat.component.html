@@ -63,19 +63,19 @@
                     </div>
 
                     <div class="type_msg">
-                        <div class="input_msg_write">
-
-                            <div class="send_mgs_container">
-                                <input type="text" class="write_msg" (keyup.enter)="sendMessage()"
-                                    (input)="onInputChange($any($event.target).value)" (focus)="onFocusChange(true)"
-                                    (focusout)="onFocusChange(false)"
-                                    *ngIf="{data: this.chatService.typingOptions$ | async} as typingOptions"
-                                    [placeholder]="typingOptions.data?.isTyping ? 'Someone is typing...' : 'Type Message'"
-                                    [formControl]="sendMessageInput" />
-
-                                <button [disabled]="sendMessageInput.invalid" (click)="sendMessage()"
-                                    class="btn btn-primary btn-sm" type="button">Send</button>
-                            </div>
+                        <div class="input_msg_write chat-input">
+                        
+                            <!-- Message Input Field -->
+                            <input type="text" class="write_msg" (keyup.enter)="sendMessage()"
+                                (input)="onInputChange($any($event.target).value)" (focus)="onFocusChange(true)"
+                                (focusout)="onFocusChange(false)" *ngIf="{data: this.chatService.typingOptions$ | async} as typingOptions"
+                                [placeholder]="typingOptions.data?.isTyping ? 'Someone is typing...' : 'Message...'"
+                                [formControl]="sendMessageInput" />
+                        
+                            <!-- Send Button -->
+                            <button [disabled]="sendMessageInput.invalid" (click)="sendMessage()" class="btn btn-primary send-button">
+                                Send
+                            </button>
 
                         </div>
                     </div>

@@ -28,6 +28,7 @@ export class ChatService {
     this.connection.on('ReceiveMessage', (user: string, message: string, messageTime: string) => {
       this.messages = [...this.messages, { user, message, messageTime }]
       this.messages$.next(this.messages)
+      console.log(this.messages)
     })
 
     this.connection.on('ConnectedUser', (users: any) => {

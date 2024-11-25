@@ -33,13 +33,14 @@
                     <div #scrollMe class="msg_history">
                         <ng-container *ngFor="let message of this.chatService.messages$ | async">
 
-                            <div [ngClass]="{'incoming_msg': message.user !== loggedInUsername, 'outgoing_msg': message.user === loggedInUsername}">
+                            <div
+                                [ngClass]="{'incoming_msg': message.user !== loggedInUsername, 'outgoing_msg': message.user === loggedInUsername}">
 
                                 <div *ngIf="message.user != loggedInUsername" class="incoming_msg_img">
                                     <img *ngIf="message.user === 'SignalChat Bot'"
                                         src="../../../assets/images/avatar-bot.png" alt="{{message.user}}">
-                                    <img *ngIf="message.user !== 'SignalChat Bot'" src="../../../assets/images/avatar.jpg"
-                                        alt="{{message.user}}">
+                                    <img *ngIf="message.user !== 'SignalChat Bot'"
+                                        src="../../../assets/images/avatar.jpg" alt="{{message.user}}">
                                 </div>
 
                                 <div *ngIf="message.user != loggedInUsername" class="received_msg">
@@ -64,16 +65,29 @@
 
                     <div class="type_msg">
                         <div class="input_msg_write chat-input">
-                        
+
                             <!-- Message Input Field -->
                             <input type="text" class="write_msg" (keyup.enter)="sendMessage()"
                                 (input)="onInputChange($any($event.target).value)" (focus)="onFocusChange(true)"
-                                (focusout)="onFocusChange(false)" *ngIf="{data: this.chatService.typingOptions$ | async} as typingOptions"
+                                (focusout)="onFocusChange(false)"
+                                *ngIf="{data: this.chatService.typingOptions$ | async} as typingOptions"
                                 [placeholder]="typingOptions.data?.isTyping ? 'Someone is typing...' : 'Message...'"
                                 [formControl]="sendMessageInput" />
-                        
+
+                            <!-- Timer Icon and Options -->
+                            <button class="icon-button timer-icon" (click)="toggleTimerOptions()" type="button">
+                                ⏱️
+                            </button>
+                            <div *ngIf="showTimerOptions" class="timer-options">
+                                <button *ngFor="let time of timerOptions" (click)="selectDisappearingTime(time.value)"
+                                    [class.active]="disappearTime === time.value" class="timer-option">{{ time.label }}
+                                </button>
+                            </div>
+
+
                             <!-- Send Button -->
-                            <button [disabled]="sendMessageInput.invalid" (click)="sendMessage()" class="btn btn-primary send-button">
+                            <button [disabled]="sendMessageInput.invalid" (click)="sendMessage()"
+                                class="btn btn-primary send-button">
                                 Send
                             </button>
 

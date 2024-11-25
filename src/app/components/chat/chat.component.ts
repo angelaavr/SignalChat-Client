@@ -21,6 +21,18 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   loggedInUsername = sessionStorage.getItem('user');
   roomName = sessionStorage.getItem('room');
 
+  //Timer
+  timerOptions = [
+    { label: '10s', value: 10 },
+    { label: '30s', value: 30 },
+    { label: '60s', value: 60 },
+    { label: 'Off', value: null },
+  ];
+  showTimerOptions = false;
+  disappearTime: number | null = null;
+
+
+
   @ViewChild('scrollMe') private scrollContainer!: ElementRef
 
   constructor(public chatService: ChatService,
@@ -82,6 +94,15 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     if (isFocusOn && this.sendMessageInput.valid) {
       this.chatService.setTypingTrue(user, room).then(() => { }).catch(err => console.log(err))
     }
+  }
+
+  toggleTimerOptions() {
+    this.showTimerOptions = !this.showTimerOptions;
+  }
+
+  selectDisappearingTime(time: number | null) {
+    this.disappearTime = time;
+    this.showTimerOptions = false;
   }
 
 }

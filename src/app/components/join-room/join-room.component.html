@@ -1,0 +1,23 @@
+<div class="page-background">
+    <div class="container_custom">
+        <div class="card glass-card shadow-lg rounded-3">
+            <form [formGroup]="joinRoomForm" class="card-body p-lg-5 text-center">
+
+                <h2 class="display-4 text-light mt-5 mb-4">Welcome to SignalChat</h2>  
+
+                <div class="mb-3">
+                    <input formControlName="user" class="form-control modern-input" id="displayname" aria-describedby="emailHelp" placeholder="Display Name">
+                </div>
+
+                <div class="mb-3">
+                    <input formControlName="room" type="text" class="form-control modern-input" id="roomname" placeholder="Room Name">
+                </div>
+
+                <div class="text-center">
+                    <button [disabled]="joinRoomForm.invalid" (click)="joinRoom()" type="submit" class="btn btn-modern btn-lg px-4 mb-5 w-75">Join</button>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+.page-background {
+    background: linear-gradient(135deg, #2e2e2e, #3a3a3a);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container_custom {
+    max-width: 600px;
+    margin: 30px;
+}
+
+.glass-card {
+    background: rgba(50, 50, 50, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+}
+
+.display-4 {
+    font-weight: 600;
+    color: #f1f1f1;
+}
+
+.modern-input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    border-radius: 10px;
+    padding: 10px;
+    transition: border 0.3s ease, background 0.3s ease;
+}
+
+.modern-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.modern-input:focus {
+    outline: none;
+    border-color: #ff5f6d;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-modern {
+    background: linear-gradient(135deg, #ff5f6d, #ffc371);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-modern:hover {
+    background: linear-gradient(135deg, #ff7e87, #ffbf9d);
+    transform: translateY(-2px);
+}
+
+.shadow-lg {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}

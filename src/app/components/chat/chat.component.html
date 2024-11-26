@@ -33,8 +33,7 @@
                     <div #scrollMe class="msg_history">
                         <ng-container *ngFor="let message of this.chatService.messages$ | async">
 
-                            <div
-                                [ngClass]="{'incoming_msg': message.user !== loggedInUsername, 'outgoing_msg': message.user === loggedInUsername}">
+                            <div [ngClass]="{'incoming_msg': message.user !== loggedInUsername, 'outgoing_msg': message.user === loggedInUsername}">
 
                                 <div *ngIf="message.user != loggedInUsername" class="incoming_msg_img">
                                     <img *ngIf="message.user === 'SignalChat Bot'"
@@ -45,7 +44,7 @@
 
                                 <div *ngIf="message.user != loggedInUsername" class="received_msg">
                                     <div class="received_withd_msg">
-                                        <p> {{message.message}}</p>
+                                        <p> {{message.content}}</p>
                                         <span class="time_date"><span class="fw-bold">{{message.user}}</span> |
                                             {{message.messageTime | date:
                                             'medium'}}</span>
@@ -53,7 +52,7 @@
                                 </div>
 
                                 <div *ngIf="message.user === loggedInUsername" class="sent_msg">
-                                    <p>{{message.message}}</p>
+                                    <p>{{message.content}}</p>
                                     <span class="time_date"><span class="fw-bold">{{message.user}}</span> |
                                         {{message.messageTime | date:
                                         'medium'}}</span>
@@ -83,7 +82,6 @@
                                     [class.active]="disappearTime === time.value" class="timer-option">{{ time.label }}
                                 </button>
                             </div>
-
 
                             <!-- Send Button -->
                             <button [disabled]="sendMessageInput.invalid" (click)="sendMessage()"

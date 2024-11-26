@@ -4,6 +4,7 @@ import { HubConnection } from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
 import { TypingOptions, UserRoom } from '../interfaces/user-room';
 import { ToastrService } from 'ngx-toastr';
+import { iMessage } from '../interfaces/message';
 
 @Injectable({
   providedIn: 'root'
@@ -25,10 +26,17 @@ export class ChatService {
 
   constructor(private toastrService: ToastrService) {
 
-    this.connection.on('ReceiveMessage', (user: string, message: string, messageTime: string) => {
-      this.messages = [...this.messages, { user, message, messageTime }]
-      this.messages$.next(this.messages)
+    // this.connection.on('ReceiveMessage', (user: string, message: string, messageTime: string) => {
+    //   this.messages = [...this.messages, { user, message, messageTime }]
+    //   console.log(this.messages)
+    //   this.messages$.next(this.messages)
+    // })
+
+    this.connection.on('ReceiveMessage', (message: iMessage) => {
+      console.log(message)
+      this.messages = [...this.messages, message]
       console.log(this.messages)
+      this.messages$.next(this.messages)
     })
 
     this.connection.on('ConnectedUser', (users: any) => {
@@ -76,12 +84,12 @@ export class ChatService {
     return this.connection.invoke('JoinRoom', { user, room })
   }
 
-  public async sendMessage(message: string) {
+  public async sendMessage(message: iMessage) {
     return this.connection.invoke('SendMessage', message)
   }
 
   public async leaveChat() {
-    return this.connection.stop()
+    return this.connection.stop();
   }
 
   public async setTypingTrue(user: string, room: string) {

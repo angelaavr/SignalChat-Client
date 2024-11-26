@@ -1,9 +1,9 @@
 export interface UserRoom {
-    user: string
-    room: string
+    user: string;
+    room: string;
 }
 
 export interface TypingOptions {
-    isTyping: boolean
-    username: string
+    isTyping: boolean;
+    username: string;
 }

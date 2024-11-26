@@ -4,6 +4,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { Router } from '@angular/router';
 import { UserRoom } from '../../interfaces/user-room';
+import { iMessage } from '../../interfaces/message';
 
 @Component({
   selector: 'app-chat',
@@ -31,8 +32,6 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   showTimerOptions = false;
   disappearTime: number | null = null;
 
-
-
   @ViewChild('scrollMe') private scrollContainer!: ElementRef
 
   constructor(public chatService: ChatService,
@@ -55,7 +54,18 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   sendMessage() {
     if (this.sendMessageInput.invalid) return;
 
-    this.chatService.sendMessage(this.sendMessageInput.value as string).then(() => {
+    let remainingPercentage = null;
+
+    const message: iMessage = {
+      content: this.sendMessageInput.value as string,
+      user: '',
+      messageTime: '', 
+      disappearAfter: this.disappearTime, 
+      remainingTime: this.disappearTime || null, 
+      remainingPercentage: remainingPercentage
+    };
+
+    this.chatService.sendMessage(message).then(() => {
       this.sendMessageInput.setValue('')
     }).catch(err => console.log(err))
 

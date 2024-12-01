@@ -1,4 +1,5 @@
 export interface iMessage {
+    id: string;
     content: string;
     user: string;
     messageTime: string;

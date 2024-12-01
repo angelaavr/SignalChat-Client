@@ -24,19 +24,26 @@ export class ChatService {
   public messages: any[] = [];
   public users: string[] = [];
 
+
+  private visibleMessages = new BehaviorSubject<Set<string>>(new Set());
+  visibleMessages$ = this.visibleMessages.asObservable();
+
   constructor(private toastrService: ToastrService) {
 
-    // this.connection.on('ReceiveMessage', (user: string, message: string, messageTime: string) => {
-    //   this.messages = [...this.messages, { user, message, messageTime }]
-    //   console.log(this.messages)
-    //   this.messages$.next(this.messages)
-    // })
-
     this.connection.on('ReceiveMessage', (message: iMessage) => {
+
       console.log(message)
+      if (message.disappearAfter) {
+        let loggedInUsername = sessionStorage.getItem('user');
+
+        if (message.user == loggedInUsername) {
+          this.onClickViewMessage(message);
+        }
+      }
+
       this.messages = [...this.messages, message]
-      console.log(this.messages)
       this.messages$.next(this.messages)
+      console.log(this.messages)
     })
 
     this.connection.on('ConnectedUser', (users: any) => {
@@ -64,6 +71,21 @@ export class ChatService {
     this.connection.on('Ping', () => {
       this.toastrService.warning("ping from server")
     })
+  }
+
+  showMessage(id: string): void {
+    const currentSet = new Set(this.visibleMessages.getValue());
+    currentSet.add(id);
+    this.visibleMessages.next(currentSet);
+  }
+
+  public onClickViewMessage(message: iMessage){
+    if (message.disappearAfter) {
+      setTimeout(() => {
+        this.messages = this.messages.filter(msg => msg !== message);
+        this.messages$.next(this.messages);
+      }, message.disappearAfter * 1000);
+    }
   }
 
   // start connection

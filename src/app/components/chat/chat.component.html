@@ -35,6 +35,7 @@
 
                             <div [ngClass]="{'incoming_msg': message.user !== loggedInUsername, 'outgoing_msg': message.user === loggedInUsername}">
 
+                                <!-- Image in chat -->
                                 <div *ngIf="message.user != loggedInUsername" class="incoming_msg_img">
                                     <img *ngIf="message.user === 'SignalChat Bot'"
                                         src="../../../assets/images/avatar-bot.png" alt="{{message.user}}">
@@ -42,8 +43,15 @@
                                         src="../../../assets/images/avatar.jpg" alt="{{message.user}}">
                                 </div>
 
+                                <!-- Received Message -->
                                 <div *ngIf="message.user != loggedInUsername" class="received_msg">
-                                    <div class="received_withd_msg">
+                                    <!-- Button "Show Message" - for disappearing -->
+                                    <div *ngIf="message.disappearAfter && !visibleMessages.has(message.id)">
+                                        <button (click)="this.chatService.onClickViewMessage(message); this.chatService.showMessage(message.id)">Show Message</button>
+                                    </div>
+
+                                    <!-- Received Message -->
+                                    <div *ngIf="message.disappearAfter == null || visibleMessages.has(message.id)" class="received_withd_msg">
                                         <p> {{message.content}}</p>
                                         <span class="time_date"><span class="fw-bold">{{message.user}}</span> |
                                             {{message.messageTime | date:
@@ -51,6 +59,7 @@
                                     </div>
                                 </div>
 
+                                <!-- My Sent Message -->
                                 <div *ngIf="message.user === loggedInUsername" class="sent_msg">
                                     <p>{{message.content}}</p>
                                     <span class="time_date"><span class="fw-bold">{{message.user}}</span> |

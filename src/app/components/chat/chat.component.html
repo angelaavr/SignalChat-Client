@@ -33,29 +33,56 @@
                     <div #scrollMe class="msg_history">
                         <ng-container *ngFor="let message of this.chatService.messages$ | async">
 
-                            <div [ngClass]="{'incoming_msg': message.user !== loggedInUsername, 'outgoing_msg': message.user === loggedInUsername}">
+                            <div
+                                [ngClass]="{'incoming_msg': message.user !== loggedInUsername, 'outgoing_msg': message.user === loggedInUsername}">
 
+                                <!-- Image in chat -->
                                 <div *ngIf="message.user != loggedInUsername" class="incoming_msg_img">
                                     <img *ngIf="message.user === 'SignalChat Bot'"
                                         src="../../../assets/images/avatar-bot.png" alt="{{message.user}}">
-                                    <img *ngIf="message.user !== 'SignalChat Bot'" src="../../../assets/images/avatar.jpg"
-                                        alt="{{message.user}}">
+                                    <img *ngIf="message.user !== 'SignalChat Bot'"
+                                        src="../../../assets/images/avatar.jpg" alt="{{message.user}}">
                                 </div>
 
+                                <!-- Received Message -->
                                 <div *ngIf="message.user != loggedInUsername" class="received_msg">
-                                    <div class="received_withd_msg">
-                                        <p> {{message.message}}</p>
+                                    <!-- Button "Show Message" - for disappearing -->
+                                    <div *ngIf="message.disappearAfter && !visibleMessages.has(message.id)">
+                                        <button class="showMessage-button"
+                                            (click)="this.chatService.onClickViewMessage(message); this.chatService.showMessage(message.id);">Show
+                                            Message</button>
                                         <span class="time_date"><span class="fw-bold">{{message.user}}</span> |
                                             {{message.messageTime | date:
                                             'medium'}}</span>
                                     </div>
+
+                                    <!-- Received Message -->
+                                    <div *ngIf="message.disappearAfter == null || visibleMessages.has(message.id)"
+                                        class="received_withd_msg">
+                                        <p>{{message.content}}</p>
+                                        <span class="time_date"><span class="fw-bold">{{message.user}}</span> |
+                                            {{message.messageTime | date:
+                                            'medium'}}</span>
+                                    </div>
+
+                                    <!-- Countdown Timer - for disappearing -->
+                                    <div *ngIf="message.disappearAfter == null || visibleMessages.has(message.id)">
+                                        <app-countdown-timer [message]="message"></app-countdown-timer>
+                                    </div>
+
                                 </div>
 
+                                <!-- My Sent Message -->
                                 <div *ngIf="message.user === loggedInUsername" class="sent_msg">
-                                    <p>{{message.message}}</p>
+                                    <p>{{message.content}}</p>
                                     <span class="time_date"><span class="fw-bold">{{message.user}}</span> |
                                         {{message.messageTime | date:
                                         'medium'}}</span>
+
+                                    <!-- Countdown Timer - for disappearing -->
+                                    <div *ngIf="message.disappearAfter">
+                                        <app-countdown-timer [message]="message"></app-countdown-timer>
+                                    </div>
                                 </div>
 
                             </div>
@@ -63,19 +90,31 @@
                     </div>
 
                     <div class="type_msg">
-                        <div class="input_msg_write">
+                        <div class="input_msg_write chat-input">
 
-                            <div class="send_mgs_container">
-                                <input type="text" class="write_msg" (keyup.enter)="sendMessage()"
-                                    (input)="onInputChange($any($event.target).value)" (focus)="onFocusChange(true)"
-                                    (focusout)="onFocusChange(false)"
-                                    *ngIf="{data: this.chatService.typingOptions$ | async} as typingOptions"
-                                    [placeholder]="typingOptions.data?.isTyping ? 'Someone is typing...' : 'Type Message'"
-                                    [formControl]="sendMessageInput" />
+                            <!-- Message Input Field -->
+                            <input type="text" class="write_msg" (keyup.enter)="sendMessage()"
+                                (input)="onInputChange($any($event.target).value)" (focus)="onFocusChange(true)"
+                                (focusout)="onFocusChange(false)"
+                                *ngIf="{data: this.chatService.typingOptions$ | async} as typingOptions"
+                                [placeholder]="typingOptions.data?.isTyping ? 'Someone is typing...' : 'Message...'"
+                                [formControl]="sendMessageInput" />
 
-                                <button [disabled]="sendMessageInput.invalid" (click)="sendMessage()"
-                                    class="btn btn-primary btn-sm" type="button">Send</button>
+                            <!-- Timer Icon and Options -->
+                            <button class="icon-button timer-icon" (click)="toggleTimerOptions()" type="button">
+                                ⏱️
+                            </button>
+                            <div *ngIf="showTimerOptions" class="timer-options">
+                                <button *ngFor="let time of timerOptions" (click)="selectDisappearingTime(time.value)"
+                                    [class.active]="disappearTime === time.value" class="timer-option">{{ time.label }}
+                                </button>
                             </div>
+
+                            <!-- Send Button -->
+                            <button [disabled]="sendMessageInput.invalid" (click)="sendMessage()"
+                                class="btn btn-primary send-button">
+                                Send
+                            </button>
 
                         </div>
                     </div>

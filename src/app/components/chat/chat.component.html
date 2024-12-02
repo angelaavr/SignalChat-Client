@@ -47,7 +47,7 @@
                                 <div *ngIf="message.user != loggedInUsername" class="received_msg">
                                     <!-- Button "Show Message" - for disappearing -->
                                     <div *ngIf="message.disappearAfter && !visibleMessages.has(message.id)">
-                                        <button (click)="this.chatService.onClickViewMessage(message); this.chatService.showMessage(message.id)">Show Message</button>
+                                        <button class="showMessage-button" (click)="this.chatService.onClickViewMessage(message); this.chatService.showMessage(message.id)">Show Message</button>
                                     </div>
 
                                     <!-- Received Message -->

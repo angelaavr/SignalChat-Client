@@ -334,3 +334,27 @@ img {
     background-color: #007bff;
     color: white;
 }
+
+.showMessage-button {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .showMessage-button:hover {
+    background: linear-gradient(135deg, #5b76e0, #945ccf);
+    transform: translateY(-3px);
+  }
+  
+  .showMessage-button:active {
+    transform: translateY(0px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  

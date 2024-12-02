@@ -1,0 +1,6 @@
+<div *ngIf="message.disappearAfter && time > 0" class="pie-timer"
+    [ngStyle]="{ '--percentage': remainingPercentage + '%' }">
+    <div class="pie-background"></div>
+    <div class="pie-fill"></div>
+    <div class="pie-center">{{ time }}s</div>
+</div>

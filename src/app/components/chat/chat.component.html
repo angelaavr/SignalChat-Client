@@ -33,7 +33,8 @@
                     <div #scrollMe class="msg_history">
                         <ng-container *ngFor="let message of this.chatService.messages$ | async">
 
-                            <div [ngClass]="{'incoming_msg': message.user !== loggedInUsername, 'outgoing_msg': message.user === loggedInUsername}">
+                            <div
+                                [ngClass]="{'incoming_msg': message.user !== loggedInUsername, 'outgoing_msg': message.user === loggedInUsername}">
 
                                 <!-- Image in chat -->
                                 <div *ngIf="message.user != loggedInUsername" class="incoming_msg_img">
@@ -47,16 +48,28 @@
                                 <div *ngIf="message.user != loggedInUsername" class="received_msg">
                                     <!-- Button "Show Message" - for disappearing -->
                                     <div *ngIf="message.disappearAfter && !visibleMessages.has(message.id)">
-                                        <button class="showMessage-button" (click)="this.chatService.onClickViewMessage(message); this.chatService.showMessage(message.id)">Show Message</button>
-                                    </div>
-
-                                    <!-- Received Message -->
-                                    <div *ngIf="message.disappearAfter == null || visibleMessages.has(message.id)" class="received_withd_msg">
-                                        <p> {{message.content}}</p>
+                                        <button class="showMessage-button"
+                                            (click)="this.chatService.onClickViewMessage(message); this.chatService.showMessage(message.id);">Show
+                                            Message</button>
                                         <span class="time_date"><span class="fw-bold">{{message.user}}</span> |
                                             {{message.messageTime | date:
                                             'medium'}}</span>
                                     </div>
+
+                                    <!-- Received Message -->
+                                    <div *ngIf="message.disappearAfter == null || visibleMessages.has(message.id)"
+                                        class="received_withd_msg">
+                                        <p>{{message.content}}</p>
+                                        <span class="time_date"><span class="fw-bold">{{message.user}}</span> |
+                                            {{message.messageTime | date:
+                                            'medium'}}</span>
+                                    </div>
+
+                                    <!-- Countdown Timer - for disappearing -->
+                                    <div *ngIf="message.disappearAfter == null || visibleMessages.has(message.id)">
+                                        <app-countdown-timer [message]="message"></app-countdown-timer>
+                                    </div>
+
                                 </div>
 
                                 <!-- My Sent Message -->
@@ -65,6 +78,11 @@
                                     <span class="time_date"><span class="fw-bold">{{message.user}}</span> |
                                         {{message.messageTime | date:
                                         'medium'}}</span>
+
+                                    <!-- Countdown Timer - for disappearing -->
+                                    <div *ngIf="message.disappearAfter">
+                                        <app-countdown-timer [message]="message"></app-countdown-timer>
+                                    </div>
                                 </div>
 
                             </div>

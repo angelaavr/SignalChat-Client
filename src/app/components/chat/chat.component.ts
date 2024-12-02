@@ -6,18 +6,21 @@ import { Router } from '@angular/router';
 import { UserRoom } from '../../interfaces/user-room';
 import { iMessage } from '../../interfaces/message';
 import { interval, Subscription } from 'rxjs';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { CountdownTimerComponent } from '../countdown-timer/countdown-timer.component';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CountdownTimerComponent],
   templateUrl: './chat.component.html',
-  styleUrl: './chat.component.css'
+  styleUrls: ['./chat.component.css'],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   sendMessageInput = new FormControl('', Validators.required)
-  countdownIntervals: { [key: string]: Subscription } = {}; // Track each message's countdown
+  countdownIntervals: { [key: string]: Subscription } = {};
 
   messages: any[] = []
 
@@ -34,7 +37,7 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   showTimerOptions = false;
   disappearTime: number | null = null;
-  time: number | null = null;
+  time: number = 0;
   remainingPercentage: number | null = null;
 
   @ViewChild('scrollMe') private scrollContainer!: ElementRef
@@ -47,10 +50,9 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   ngOnInit(): void {
     this.chatService.visibleMessages$.subscribe((visibleMessages) => {
-      console.log(visibleMessages)
       this.visibleMessages = visibleMessages;
     });
-  }   
+  }
 
   ngOnDestroy(): void {
     this.chatService.messages$.unsubscribe()
@@ -81,45 +83,12 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
 
     this.chatService.sendMessage(message).then(() => {
       this.sendMessageInput.setValue('');
-      if (message.remainingTime) {
-        //this.startCountdown(message); // Start countdown if remainingTime is set
-      }
       this.disappearTime = null;
-
     }).catch(err => console.log(err))
 
     this.onFocusChange(false);
   }
 
-  //CountDown
-  // startCountdown(message: iMessage){
-  //   this.time = message.remainingTime!;
-  //   const totalDuration = message.disappearAfter || 1;
-  //   this.remainingPercentage = (message.remainingTime! / totalDuration) * 100;
-
-  //   if (!message.remainingTime) return; // Only start countdown if remainingTime is set
-
-  //   // Create an interval that triggers every second
-  //   const countdown$ = interval(1000);
-
-  //   this.countdownIntervals[message.content] = countdown$.subscribe(() => {
-  //     if (message.remainingTime! > 0) {
-  //       message.remainingTime! -= 1; // Decrement remaining time
-  //       this.time = message.remainingTime;
-  //       const totalDuration = message.disappearAfter || 1;
-  //       this.remainingPercentage = (message.remainingTime! / totalDuration) * 100;
-  //       this.cdr.detectChanges();
-  //      }
-  //      else {
-  //       this.removeMessage(message); // Remove message when timer reaches 0
-  //       this.countdownIntervals[message.content].unsubscribe();
-  //      }
-  //   });
-  // }
-
-  // removeMessage(message: any) {
-  //   this.messages = this.messages.filter(msg => msg !== message);
-  // }
 
   leaveChat() {
     this.chatService.leaveChat().then(() => {

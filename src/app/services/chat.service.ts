@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import {  Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { HubConnection } from '@microsoft/signalr';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, interval, Subscription } from 'rxjs';
 import { TypingOptions, UserRoom } from '../interfaces/user-room';
 import { ToastrService } from 'ngx-toastr';
 import { iMessage } from '../interfaces/message';
+import { ChatComponent } from '../components/chat/chat.component';
 
 @Injectable({
   providedIn: 'root'
@@ -21,12 +22,20 @@ export class ChatService {
   public connectedUsers$ = new BehaviorSubject<string[]>([]);
   public typingOptions$ = new BehaviorSubject<TypingOptions | null>(null);
 
+  countdownIntervals: { [key: string]: Subscription } = {};
+
   public messages: any[] = [];
   public users: string[] = [];
 
 
   private visibleMessages = new BehaviorSubject<Set<string>>(new Set());
   visibleMessages$ = this.visibleMessages.asObservable();
+
+  private time = new BehaviorSubject<number>(0);
+  time$ = this.time.asObservable();
+
+  private remainingPercentage = new BehaviorSubject<number>(0);
+  remainingPercentage$ = this.time.asObservable();
 
   constructor(private toastrService: ToastrService) {
 
@@ -81,12 +90,40 @@ export class ChatService {
 
   public onClickViewMessage(message: iMessage){
     if (message.disappearAfter) {
+      //this.startCountdown(message);
       setTimeout(() => {
         this.messages = this.messages.filter(msg => msg !== message);
         this.messages$.next(this.messages);
       }, message.disappearAfter * 1000);
     }
   }
+
+  // startCountdown(message: iMessage){
+  //   this.time.next(message.remainingTime!);
+  //   const totalDuration = message.disappearAfter || 1;
+  //   this.remainingPercentage.next((message.remainingTime! / totalDuration) * 100);
+  //   if (!message.remainingTime) return;
+
+  //   const countdown$ = interval(1000);
+
+  //   this.countdownIntervals[message.content] = countdown$.subscribe(() => {
+  //     if(message.remainingTime !== null){
+  //       if (message.remainingTime! > 0) {
+  //         message.remainingTime! -= 1; // Decrement remaining time
+  //         this.time.next(message.remainingTime!);
+  //         const totalDuration = message.disappearAfter || 1;
+  //         this.remainingPercentage.next((message.remainingTime! / totalDuration) * 100);
+  //         console.log("remainingPercentage")
+  //         console.log((message.remainingTime! / totalDuration) * 100)
+  //         //this.cdr.detectChanges();
+  //        }
+  //        else {
+  //         //this.removeMessage(message); // Remove message when timer reaches 0
+  //         this.countdownIntervals[message.content].unsubscribe();
+  //        }
+  //     }
+  //   });
+  // }
 
   // start connection
   public async start() {
